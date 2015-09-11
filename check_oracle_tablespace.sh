@@ -23,6 +23,9 @@
 
 # ------------------------------ SETTINGS --------------------------------------
 
+#Load ENV Variable
+source /home/oracle/db.env
+
 # Oracle environment settings (could be parametrized)
 ORACLE_ORATAB="/etc/oratab"
 ORACLE_USER=""
