@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ========================================================================================
-# NFS health monitor plugin for Nagios
+# Filesystem monitor plugin for Nagios
 # 
 # Written by         	: Davide Costantini (http://davidecostantini.it)
 # Release               : Ver. 0.01
