@@ -41,6 +41,8 @@ print_revision() {
 print_usage() {
 	echo "Usage: $PROGNAME -d <dir_path>"
 	echo ""
+    echo "Nagios plugin to check if possible write a file and then read back and check the content to see if is consistent"
+    echo ""
 	echo "-h Show this page"
 	echo "-v Script version"
 	echo "-d Specify the folder where to write the temp file"
