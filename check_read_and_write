@@ -31,7 +31,7 @@ AUTHOR="(c) 2015 Davide Costantini (http://davidecostantini.it)"
 # Default variable if not define in script command parameter
 # -----------------------------------------------------------------------------------------
 DIR=""
-FILENAME="check_writeandread_tmp_test_file"
+FILENAME="check_writeandread_tmp_file_$HOSTNAME"
 
 # Functions plugin usage
 print_revision() {
