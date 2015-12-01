@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# ========================================================================================
+# NFS health monitor plugin for Nagios
+# 
+# Written by         	: Davide Costantini (http://davidecostantini.it)
+# Release               : Ver. 0.01
+# Creation date		    : 01/12/2015
+# Description           : Nagios plugin to check if possible write a file and then read back and check the content to see if 
+#                         is consistent
+#			 
+#			  
+#			  This script has been designed and written on Linux platform. 
+#						
+# Usage                 : ./check_read_and_write -d <dir_path>
+
+
+# Nagios return codes
+STATE_OK=0
+STATE_WARNING=1
+STATE_CRITICAL=2
+STATE_UNKNOWN=3
+
+# Plugin variable description
+PROGNAME=$(basename $0)
+PROGPATH=$(echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,')
+REVISION="Ver 0.1"
+AUTHOR="(c) 2015 Davide Costantini (http://davidecostantini.it)"
+
+# -----------------------------------------------------------------------------------------
+# Default variable if not define in script command parameter
+# -----------------------------------------------------------------------------------------
+DIR=""
+FILENAME="check_writeandread_tmp_test_file"
+
+# Functions plugin usage
+print_revision() {
+    echo "$PROGNAME $REVISION $AUTHOR"
+}
+
+print_usage() {
+	echo "Usage: $PROGNAME -d <dir_path>"
+	echo ""
+	echo "-h Show this page"
+	echo "-v Script version"
+	echo "-d Specify the folder where to write the temp file"
+}
+
+print_help() {
+	print_revision
+	echo ""
+	print_usage
+    echo ""
+	exit $STATE_OK
+}
+
+writereply() {
+    exitstatus=$1
+    reply=$2
+
+    if [ "$1" -eq "0" ]; then
+        #OK
+        reply="OK: $reply"
+        exitstatus=$STATE_OK
+
+    elif [ "$1" -eq "1" ]; then
+        #Warning
+        reply="WARNING: $reply"
+        exitstatus=$STATE_WARNING
+
+    else
+        #Critical
+        reply="CRITICAL: $reply"
+        exitstatus=$STATE_CRITICAL
+
+    fi
+
+    echo $reply
+    exit $exitstatus
+}
+
+docheck() {
+    if [[ -z "$DIR" ]]; then
+        writereply 2 "Dir not specified"
+    fi
+    
+    WRITE_VALUE="$(date) $line"
+    echo "$WRITE_VALUE" > $DIR/$FILENAME
+
+    READ_VALUE=$(<$DIR/$FILENAME)
+
+    #Deleting file
+    rm -rf $DIR/$FILENAME
+
+    if [ "$WRITE_VALUE" == "$READ_VALUE" ]; then
+        writereply 0 "File has been written and read successfully with content: $WRITE_VALUE"
+    else
+        writereply 2 "Problem occurred while working - FILE: $DIR/$FILENAME, WRITE_VALUE: $WRITE_VALUE, READ_VALUE: $READ_VALUE"
+    fi
+}
+
+
+# -------------------------------------------------------------------------------------
+# Grab the command line arguments
+# --------------------------------------------------------------------------------------
+case "$1" in
+	-h | --help)
+        	print_help
+        	exit $STATE_OK
+        	;;
+    	-v | --version)
+            print_revision
+            exit $STATE_OK
+            ;;
+    	-d | --directory)
+            DIR=$2
+            docheck
+            ;;
+
+	*)  echo "Unknown argument: $1"
+        	print_usage
+        	exit $STATE_UNKNOWN
+        	;;
+	esac
+shift
+
