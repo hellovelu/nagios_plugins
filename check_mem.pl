@@ -51,6 +51,12 @@ if ($opt_C) { #Do we count caches as free?
     $free_memory_kb += $caches_kb;
 }
 
+#Davide - 04/02/2016
+my $top_ps_using_mem;
+$top_ps_using_mem = `ps ax --sort -rss | head -n 5`;
+$top_ps_using_mem = `ps ax --sort -rss -o pid -o pmem -o cmd | head -n 5 | awk '{print \$1,\$2,substr(\$3,1,50)}'`;
+print "$top_ps_using_mem";
+
 # Round to the nearest KB
 $free_memory_kb = sprintf('%d',$free_memory_kb);
 $used_memory_kb = sprintf('%d',$used_memory_kb);
