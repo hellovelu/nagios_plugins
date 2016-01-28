@@ -197,7 +197,7 @@ if [ "$ALERT" == "false" ]
 fi
 
 #Davide 04/02/2016
-top_ps_using_cpu=`ps ax --sort -rss -o pid -o pcpu -o cmd | head -n 5 | awk '{print \$1,\$2,substr(\$3,1,50)}'`
+top_ps_using_cpu=`ps -e -o pid,pcpu,cmd --sort=-pcpu | head -n 5 | awk '{print $1,$2,substr($3,1,50)}'`
 echo "$top_ps_using_cpu"
 
 #Display CPU Performance with alert
